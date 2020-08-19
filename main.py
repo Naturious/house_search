@@ -8,17 +8,18 @@ import cssutils
 
 URL = "https://www.tayara.tn/sc/immobilier/appartements/centre%20urbain%20nord"
 FILENAME = "houses.json"
-INTERVAL = 10000 #ms
+INTERVAL = 10  # s
+
 
 def search():
     page = requests.get(URL)
     soup = BeautifulSoup(page.content, 'html.parser')
-    results = soup.find_all(class_="card__preview")
+    results = list(map(lambda x: x.find("a", recursive=False), soup.find_all(class_="card")))
     return results
 
 
 def extract_url(a):
-    return cssutils.parseStyle(a['style'])['background-image'].replace('url(', '').replace(')', '')
+    return "https://www.tayara.tn"+a['href']
 
 
 def get_old_houses():
@@ -52,6 +53,7 @@ def main():
     while 1:
         update()
         time.sleep(INTERVAL)
+
 
 if __name__ == '__main__':
     main()
