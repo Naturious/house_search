@@ -8,7 +8,7 @@ import cssutils
 
 URL = "https://www.tayara.tn/sc/immobilier/appartements/centre%20urbain%20nord"
 FILENAME = "houses.json"
-
+INTERVAL = 10000 #ms
 
 def search():
     page = requests.get(URL)
@@ -50,8 +50,8 @@ def update():
 
 def main():
     while 1:
-        time.sleep(10)
         update()
+        time.sleep(INTERVAL)
 
 if __name__ == '__main__':
     main()
