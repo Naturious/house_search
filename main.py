@@ -10,9 +10,9 @@ URL = "https://www.tayara.tn/sc/immobilier/appartements/centre%20urbain%20nord"
 FILENAME = "houses.json"
 INTERVAL = 10  # s
 
-SSID = "razzeb"
-TOKEN = "terma"
-NUMBER = "za3ka"
+SSID = "ACd521f8a7ff18c85f1e66d3e2065c68b9"
+TOKEN = "ce59d9c24c0db4287c183a91737e312a"
+NUMBERS = ["+21620067465","+21695479247"]
 
 def search():
     page = requests.get(URL)
