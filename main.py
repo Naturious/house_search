@@ -2,6 +2,8 @@ import time
 import requests
 import json
 from pprint import pprint
+from twilio.rest import Client
+
 
 from bs4 import BeautifulSoup
 import cssutils
@@ -10,6 +12,9 @@ URL = "https://www.tayara.tn/sc/immobilier/appartements/centre%20urbain%20nord"
 FILENAME = "houses.json"
 INTERVAL = 10  # s
 
+SSID = "ACd521f8a7ff18c85f1e66d3e2065c68b9"
+TOKEN = "ce59d9c24c0db4287c183a91737e312a"
+NUMBERS = ["+21620067465","+21695479247"]
 
 def search():
     page = requests.get(URL)
@@ -31,7 +36,15 @@ def save_houses(houses):
 
 
 def notify(house):
-    print(house)
+
+    for number in NUMBERS:
+        print(f"Sending offer {house} to {number}")
+        twilio_client.messages.create(
+            body=f"Dar jdida yal John.\n\n{house}",
+            from_='+1 205 551 8227',
+            to=number
+        )
+    
 
 
 def update():
@@ -56,4 +69,5 @@ def main():
 
 
 if __name__ == '__main__':
+    twilio_client = Client(SSID, TOKEN)
     main()
