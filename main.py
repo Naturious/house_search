@@ -2,6 +2,8 @@ import time
 import requests
 import json
 from pprint import pprint
+from twilio.rest import Client
+
 
 from bs4 import BeautifulSoup
 import cssutils
@@ -34,7 +36,15 @@ def save_houses(houses):
 
 
 def notify(house):
-    print(house)
+
+    for number in NUMBERS:
+        print(f"Sending offer {house} to {number}")
+        twilio_client.messages.create(
+            body=f"Dar jdida yal John.\n\n{house}",
+            from_='+1 205 551 8227',
+            to=number
+        )
+    
 
 
 def update():
@@ -59,4 +69,5 @@ def main():
 
 
 if __name__ == '__main__':
+    twilio_client = Client(SSID, TOKEN)
     main()
