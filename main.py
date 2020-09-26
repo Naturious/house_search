@@ -1,20 +1,17 @@
 import time
 import requests
 import json
-from pprint import pprint
-from twilio.rest import Client
-
 
 from bs4 import BeautifulSoup
-import cssutils
+
+import requests
 
 URL = "https://www.tayara.tn/sc/immobilier/appartements/centre%20urbain%20nord"
 FILENAME = "houses.json"
 INTERVAL = 10  # s
 
-SSID = "ACd521f8a7ff18c85f1e66d3e2065c68b9"
-TOKEN = "ce59d9c24c0db4287c183a91737e312a"
-NUMBERS = ["+21620067465","+21695479247"]
+WIREPUSHER_ID = '6mEZmpXwA'
+
 
 def search():
     page = requests.get(URL)
@@ -24,7 +21,7 @@ def search():
 
 
 def extract_url(a):
-    return "https://www.tayara.tn"+a['href']
+    return "https://www.tayara.tn" + a['href']
 
 
 def get_old_houses():
@@ -36,18 +33,17 @@ def save_houses(houses):
 
 
 def notify(house):
+    print("Notifying, " + house)
+    params = {
+        'id': WIREPUSHER_ID,
+        'title': "Dar jdida aala tayara",
+        'message': house
+    }
+    r = requests.get('https://wirepusher.com/send', params=params)
+    print(f"Notified and got response code {r.status_code}, with response {r.text}")
 
-    for number in NUMBERS:
-        print(f"Sending offer {house} to {number}")
-        twilio_client.messages.create(
-            body=f"Dar jdida yal John.\n\n{house}",
-            from_='+1 205 551 8227',
-            to=number
-        )
-    
 
-
-def update():
+def update(flag=None):
     print('Checking new listings..')
     houses = list(map(extract_url, search()))
     old_houses = get_old_houses()
@@ -56,18 +52,20 @@ def update():
     print(f'Found {len(difference)} new houses!')
     if len(difference):
         print('Notifying with new house listings')
-    for house in difference:
-        notify(house)
+    if flag:
+        for house in difference:
+            notify(house)
     print('Saving new list')
     save_houses(houses)
 
 
 def main():
+    notify_flag = False
     while 1:
-        update()
+        update(notify_flag)
         time.sleep(INTERVAL)
+        notify_flag = True
 
 
 if __name__ == '__main__':
-    twilio_client = Client(SSID, TOKEN)
     main()
